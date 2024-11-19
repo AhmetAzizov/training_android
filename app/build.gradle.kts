@@ -58,9 +58,21 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation("androidx.compose.foundation:foundation:1.7.5") // For insets support
+
     implementation (libs.androidx.datastore.preferences)
+
+    implementation("androidx.navigation:navigation-compose:2.8.4")
 
     implementation (libs.androidx.room.ktx)
     kapt ("androidx.room:room-compiler:2.6.1")
+
+//    implementation(libs.retrofit)
+//    implementation(libs.converter.gson)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+
 
 }

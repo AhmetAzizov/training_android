@@ -1,13 +1,13 @@
 package com.example.training_android
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.training_android.Room.FavoriteDao
 
 class MainViewModelFactory(
-    private val dataStore: DataStore<Preferences>,
-    private val dao: FavoriteDao) : ViewModelProvider.Factory
+    private val dataStore: FavoritesDataStore,
+    private val dao: FavoriteDao
+) : ViewModelProvider.Factory
 {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {

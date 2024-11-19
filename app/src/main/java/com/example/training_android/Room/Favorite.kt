@@ -1,4 +1,4 @@
-package com.example.training_android
+package com.example.training_android.Room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,4 +1,4 @@
-package com.example.training_android
+package com.example.training_android.Room
 
 import android.content.Context
 import androidx.room.Database
@@ -11,23 +11,26 @@ import androidx.room.RoomDatabase
 )
 abstract class FavoritesDatabase: RoomDatabase() {
 
-    abstract val dao: FavoriteDao
+    abstract fun getDao(): FavoriteDao
 
     companion object {
         @Volatile
         private var INSTANCE: FavoritesDatabase? = null
 
         fun getDatabase(context: Context): FavoritesDatabase {
+            val tempInstance = INSTANCE
+            if (tempInstance != null) {
+                return tempInstance
+            }
 
-            return INSTANCE ?: synchronized(this) {
+            synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     FavoritesDatabase::class.java,
                     "app_database"
                 ).build()
                 INSTANCE = instance
-                // return instance
-                instance
+                return instance
             }
         }
     }

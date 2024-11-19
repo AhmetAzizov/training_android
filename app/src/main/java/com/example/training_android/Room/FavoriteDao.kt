@@ -1,7 +1,6 @@
-package com.example.training_android
+package com.example.training_android.Room
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -11,6 +10,10 @@ interface FavoriteDao {
     @Insert
     suspend fun insertFavorite(favorite: Favorite)
 
+
+    @Query("DELETE FROM Favorite")
+    suspend fun deleteAllFavorites()
+
     @Query("SELECT * FROM Favorite")
-    fun getFavorites(): List<Favorite>
+    suspend fun getFavorites(): List<Favorite>
 }

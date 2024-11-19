@@ -1,46 +1,45 @@
 package com.example.training_android
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.first
+import com.example.training_android.Model.Message
+import com.example.training_android.Retrofit.RequestBody
+import com.example.training_android.Retrofit.RetrofitInstance
+import com.example.training_android.Room.Favorite
+import com.example.training_android.Room.FavoriteDao
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+
+private const val TAG = "MainViewModel"
 
 class MainViewModel(
-    private val dataStore: DataStore<Preferences>,
+    private val dataStore: FavoritesDataStore,
     private val dao: FavoriteDao
 ): ViewModel() {
 
     var number = mutableStateOf(0)
     var maxNumber = mutableStateOf(0)
+    var chatTextField = mutableStateOf("")
+    var responseMessage = mutableStateOf("")
+
+    var messageList = mutableStateOf<List<Message>>(listOf(Message("Merhaba", false), Message("Selam", true)))
+
     var favoriteList = mutableStateOf<List<Favorite>>(emptyList())
 
-    private val NUMBER_KEY = intPreferencesKey("number")
-
     init {
-        maxNumber.value = getNumber()
-
         viewModelScope.launch {
-            dao.insertFavorite(Favorite(favoriteNumber = 5))
-            dao.insertFavorite(Favorite(favoriteNumber = 2))
-            dao.insertFavorite(Favorite(favoriteNumber = 12))
-        }
+            maxNumber.value = dataStore.getNumber()
 
-        favoriteList.value = dao.getFavorites()
+            favoriteList.value = dao.getFavorites()
+        }
     }
 
     fun updateValue() {
         number.value += 1
 
         if (number.value > maxNumber.value) {
-            saveNumber(maxNumber.value)
+            saveNumber(number.value)
         }
     }
 
@@ -48,26 +47,43 @@ class MainViewModel(
         number.value = 0
     }
 
-    fun saveNumber(number: Int) {
+    private fun saveNumber(number: Int) {
         viewModelScope.launch {
-            dataStore.edit { preferences ->
-                preferences[NUMBER_KEY] = number
-            }
+            dataStore.saveNumber(number)
 
-            maxNumber.value = number
+            maxNumber.value = dataStore.getNumber()
         }
     }
 
-    fun getNumber(): Int {
-        var number: Int
+    fun addFavorites(number: Int) {
+        viewModelScope.launch {
+            dao.insertFavorite(Favorite(number))
 
-        runBlocking {
-            val preferences = dataStore.data.first()
-            number = preferences[NUMBER_KEY] ?: 0
+            favoriteList.value = dao.getFavorites()
         }
+    }
 
-        Log.d("getNumber", "getNumber: $number")
+    fun clearFavorites() {
+        viewModelScope.launch {
+            dao.deleteAllFavorites()
 
-        return number
+            favoriteList.value = dao.getFavorites()
+        }
+    }
+
+    fun sendRequest(message: String) {
+        messageList.value += Message(message, true)
+        viewModelScope.launch {
+            try {
+                val response = RetrofitInstance.chatApi.get(RequestBody("sophaAI", message))
+                messageList.value += Message(response.msg, false)
+//                val text = "CODE: ${response.code} \n\nMESSAGE: ${response.msg}"
+//                responseMessage.value = text
+            } catch (e: Exception) {
+
+                responseMessage.value = e.message.toString()
+
+            }
+        }
     }
 }

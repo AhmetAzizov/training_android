@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">training_android</string>
+    <string name="BtnSend">Send</string>
 </resources>
