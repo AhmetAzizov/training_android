@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.training_android.Room.FavoritesDatabase
 import com.example.training_android.View.ChatScreen
+import com.example.training_android.View.HomeScreen
 
 @Composable
 fun Navigation() {

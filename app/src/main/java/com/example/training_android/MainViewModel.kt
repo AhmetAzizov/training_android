@@ -1,7 +1,9 @@
 package com.example.training_android
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.training_android.Model.Message
@@ -9,7 +11,10 @@ import com.example.training_android.Retrofit.RequestBody
 import com.example.training_android.Retrofit.RetrofitInstance
 import com.example.training_android.Room.Favorite
 import com.example.training_android.Room.FavoriteDao
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 private const val TAG = "MainViewModel"
 
@@ -73,15 +78,13 @@ class MainViewModel(
 
     fun sendRequest(message: String) {
         messageList.value += Message(message, true)
+        chatTextField.value = ""
+
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.chatApi.get(RequestBody("sophaAI", message))
                 messageList.value += Message(response.msg, false)
-//                val text = "CODE: ${response.code} \n\nMESSAGE: ${response.msg}"
-//                responseMessage.value = text
             } catch (e: Exception) {
-
-                responseMessage.value = e.message.toString()
 
             }
         }
