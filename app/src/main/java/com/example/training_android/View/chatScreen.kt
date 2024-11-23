@@ -97,10 +97,10 @@ fun ChatScreen(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(5f),
+                        .weight(1f),
                     state = listState,
                     verticalArrangement = Arrangement.spacedBy(
-                        900.dp,
+                        12.dp,
                         alignment = Alignment.Bottom
                     )
                 ) {
@@ -112,7 +112,7 @@ fun ChatScreen(
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(90.dp),
+                        .padding(6.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done // Specify the IME action
                     ),
@@ -122,7 +122,7 @@ fun ChatScreen(
                         }
                     ),
                     textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onSurface),
-                    placeholder = { Text("Type a amcik") },
+                    placeholder = { Text("Type a query") },
                     value = viewModel.chatTextField.value,
                     onValueChange = { viewModel.chatTextField.value = it }
                 )
